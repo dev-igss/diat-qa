@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y \
 && docker-php-ext-install mysqli pdo pdo_mysql
@@ -43,6 +43,9 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 COPY ./code-dev /var/www
 
 RUN chmod 777 -R -c /var/www
@@ -52,8 +55,6 @@ RUN chmod -R 777 /var/www/storage
 RUN chmod -R 755 /var/www/storage
 
 RUN chmod -R 755 /var/www/storage/logs
-
-RUN chmod -R 755 /var/www/storage/logs/laravel.log
 
 WORKDIR /var/www
 
